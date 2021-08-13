@@ -3,28 +3,32 @@
     <!-- 轮播图组件 -->
     <Carousel :banner="bannerList"
               style="width:80%;margin:0 auto;" />
-    <song-list :latestSongList="latestSongList" />
+    <song-list style="width:80%;margin:0 auto;" :SongListData="SongListData" />
 
+    <!-- 最近新歌 -->
+    <latest-song :latestSongList="latestSongList" />
   </div>
 </template>
 
 <script>
 // 轮播图组件导入
 import Carousel from '../components/content/Carousel .vue'
-// 最近歌单导入
-import SongList from '../components/content/SongList.vue'
-
+// 最近歌曲导入
+import latestSong from '../components/content/LatestSong.vue'
+// 推荐歌单导入
+import songList from '../components/content/SongList.vue'
 // home页面的请求
-import { getBanner, getLatestSong } from '../request/home'
+import { getBanner, getLatestSong, GetRecommendPlaylist } from '../request/home'
 export default {
   components: {
     Carousel,
-    SongList
+    latestSong, songList
   },
   data () {
     return {
       bannerList: [],
-      latestSongList: []
+      latestSongList: [],
+      SongListData: []
     }
   },
   methods: {
@@ -36,7 +40,11 @@ export default {
     getLatestSong () {
       getLatestSong().then(res => {
         this.latestSongList = res.result;
-
+      })
+    },
+    GetRecommendPlaylist () {
+      GetRecommendPlaylist(30).then(res => {
+        this.SongListData = res.result;
       })
     }
   },
@@ -44,6 +52,7 @@ export default {
   mounted () {
     this.getBanner()
     this.getLatestSong()
+    this.GetRecommendPlaylist()
   }
 }
 </script>

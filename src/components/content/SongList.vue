@@ -1,118 +1,151 @@
 <template>
-  <div class="songlist">
-    <Title :title="'推荐新歌'" />
-    <ul class="RecommendSong">
-      <li :key="index"
-          @click="playSong(item.id)"
-          v-for="(item,index) in latestSongList">
-        <!-- index索引 -->
-        <span style="margin-left:4%">{{index+1}}</span>
-        <!-- 歌曲封面 -->
-        <img :src="item.picUrl+'?param=100y100'"
-             alt=""
-             class="img-sm">
-        <!-- 歌手名称 -->
-        <div style="display:inline-block">
-          <div>{{item.name}}</div>
-          <div style="margin-top:15px">{{item.song.artists[0].name}}</div>
+  <div class="grid-content">
+      <Title :title="'推荐歌单'" />
+
+
+    <ul class="rankingUl">
+      <li v-loading="loading"
+          slot="songlist"
+          class="SongList"
+          :key="index"
+          v-for="(item,index) in SongListData"
+          @click="gotolistdetails(item.id)">
+        <div>
+
         </div>
-        <!-- 专辑名称 -->
-        <div style="display:inline-block"
-             class="album">
-          <div>《{{item.song.album.name}}》</div>
-        </div>
-        <!-- 歌曲时长 -->
-        <div class="time">
-          <div>{{item.song.mMusic.playTime | GetTime()}}</div>
-        </div>
+        <span class="PlayCount"
+              v-if="ShowPlayCount">
+          <i class="My-new-iconbofang"></i>
+          <span>{{item.playCount | GetPlayCount()}}</span>
+        </span>
+        <img :src="item | GetPic()"
+             alt="">
+        <div>{{item.name}}</div>
       </li>
     </ul>
   </div>
 </template>
-
 <script>
-// 导入标题分割
-import Title from '../common/Title.vue'
-
-
-// 导入时间过滤函数
-import { filtrationTime } from '../../assets/js/songTime'
-// 音乐相关的请求
-import { playMisic } from '../../request/music'
+// 小标题组件
+import Title from '../common/Title.vue';
 export default {
-  components: { Title },
-  props: ['latestSongList'],
-  methods: {
-    // 播放音乐
-    playSong (id) {
-      playMisic(id).then(musicdata => {
-        // 通过事件总线把歌曲数据传给跟组件
-        this.$bus.$emit('getMusicMessage', { musicdata, id })
-        console.log(musicdata)
-        let newsData = {
-          picUrl: musicdata.picUrl,
-          Singer: musicdata.Singer,
-          picname: musicdata.picname
-        }
-        // this.$router.push({name:'SongDetails',query: {id:id,data:newsData}})
-      });
+  props: {
+    SongListData: {
+      type: Array,
+      default: () => []
     },
-  },
-
-  filters: {
-    GetTime (val) {
-      return filtrationTime(val);
-    },
-    GetPlayCount (val) {
-      return val >= 10000 ? Math.floor(val / 10000) + 'w' : val
+    ShowPlayCount: {
+      type: Boolean,
+      default: true
     }
   },
+  watch: {
+    SongListData () {
+      // 监听当前数据变化，然后停止加载动画
+      setTimeout(() => {
+        this.loading = false
+      }, 500)
+      this.loading = true
+    }
+  },
+  data () {
+    return {
+      loading: true
+    }
+  },
+  components: {
+    Title
+  },
+  methods: {
+    //  去歌单详细
+    gotolistdetails (id) {
+      this.$router.push("/rankingdetails/" + id);
+    },
+  },
+  filters: {
+    GetPlayCount (val) {
+      return val >= 10000 ? Math.floor(val / 10000) + 'w' : val
+    },
+    GetPic (val) {
+      // picUrl 或 coverImgUrl
+      return val.picUrl ? val.picUrl + "?param=130y130" : val.coverImgUrl + "?param=130y130"
+    }
+  },
+  mounted () {
+    setTimeout(() => {
+      this.loading = false
+    }, 500)
+  }
 }
 </script>
-
 <style lang="less">
-.songlist{
-  width: 80%;
-  margin-left: 10%;
-}
-.RecommendSong {
+.rankingUl {
+  width: 100%;
   display: flex;
-  flex-flow: wrap;
-  padding: 0;
-  justify-content: space-between;
+  padding-left: 0;
+  flex-wrap: wrap;
+  margin-bottom: 30px;
+
+  .SongList {
+    width: 10%;
+    margin-top: 15px;
+    transform: translateX(10%);
+    position: relative;
+    cursor: pointer;
+    .PlayCount {
+      position: absolute;
+      text-align: center;
+      right: 44px;
+      top: 1px;
+      font-size: 12px;
+      display: inline;
+      border-radius: 4px;
+      color: rgba(245, 243, 243, 0.9);
+      background: rgba(0, 0, 0, 0.2);
+      i,
+      span {
+        margin: 0 2px;
+      }
+    }
+    img {
+      width: 100px;
+      border-radius: 10px;
+      box-shadow: 6px 6px 3px -1px rgba(37, 37, 37, 0.3);
+    }
+  }
 }
-.RecommendSong li {
-  position: relative;
-  float: left;
-  width: 49%;
-  margin-top: 16px;
-  height: 80px;
-  background-color: rgb(250, 250, 250);
-  border-radius: 3px;
-  font-size: 14px;
-  box-shadow: 0px 10px 40px 10px rgba(0, 0, 0, 0.1);
-  cursor: pointer;
-  /*flex 布局*/
+
+// 榜单名称
+.rankingUl > li > div {
+  width: 100px;
+  font-size: 12px;
+  transform: translateX(5%);
+  // 强制一行
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2; //以此类推，3行4行直接该数字就好啦
+}
+
+.grid-content-tit {
   display: flex;
-  /*实现垂直居中*/
+  margin-bottom: 10px;
+  // 垂直居中
   align-items: center;
-  .album {
-    position: absolute;
-    right: 115px;
-    font-size: 13px;
+  span {
+    font-size: 18px;
+    font-weight: 600;
   }
-  .time {
-    position: absolute;
-    right: 25px;
+  .TitSpan {
+    width: 3px;
+    height: 20px;
+    background-color: red;
+    margin-right: 7px;
   }
 }
-.RecommendSong li:hover {
-  color: rgb(163, 163, 163);
-  background-color: rgb(202, 200, 200);
-}
-.img-sm {
-  width: 9%;
-  margin: 0 35px;
-  border-radius: 3px;
+
+.el-loading-mask {
+  left: -5px !important;
 }
 </style>

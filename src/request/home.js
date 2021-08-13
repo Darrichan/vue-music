@@ -14,3 +14,14 @@ export function getLatestSong(){
     url:'/personalized/newsong',
   })
 }
+
+// 获取推荐歌单
+export function GetRecommendPlaylist(limit){
+  return request({
+    url:'/personalized',
+    params: {
+      limit
+    }
+  })
+}
+
