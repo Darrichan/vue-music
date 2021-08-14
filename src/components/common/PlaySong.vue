@@ -1,7 +1,7 @@
 <template>
   <div>
     <!-- user.vue的数据展示-->
-    <ul v-if="SongData">
+    <ul v-if="SongData" style="padding:0;">
         <li class="TopSongli" style="color:rgb(100, 100, 100)">
           <div>序号</div>
           <div>歌曲</div>
@@ -16,7 +16,7 @@
               <!-- <span class="My-new-iconyinle" v-show="currentShow == index" ></span> -->
               <span>
                 <i class="My-new-iconyinle icnColor" v-show="currentShow == index" ></i>
-                <span v-show="currentShow !== index">{{index + 1 }}</span>
+                <span>{{index + 1 }}</span>
               </span>
             </div>
             <div>
@@ -62,9 +62,9 @@
 </template>
 
 <script>
-import {playMisic } from '@/network/PlayMisic.js'
+import {playMisic } from '../../request/PlayMusic'
 // 格式化时间
-import { filtrationTime } from '@/assets/js/SongTime.js'
+import { filtrationTime } from '../../assets/js/songTime'
 export default {
   // props:{
   //   // 来自用户模块的歌曲数据
@@ -103,11 +103,7 @@ export default {
         Singer:musicdata.Singer,
         picname:musicdata.picname
       }
-      // 将当前播放的音乐数据传给vuex进行管理
-      this.$store.commit("setMusicData",newsData)
 
-    // 跳转到评论区
-     this.$router.push({name:'SongDetails',query: {id:id}})
     });
     },
   }

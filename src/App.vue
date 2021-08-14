@@ -51,7 +51,6 @@ export default {
 
       // 把接收到的音乐数据添加到audio[0]中  令播放组件获取数据后进入待播放
       this.$set(this.audio, 0, data);
-      console.log(this.audio[0])
     })
   },
 }

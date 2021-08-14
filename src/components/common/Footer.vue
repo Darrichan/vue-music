@@ -5,7 +5,6 @@
         <div class="ddicon"></div>
         <span class="top">备案号</span>
       </div>
-      <span class="bottom">备案号</span>
     </div>
   </footer>
 </template>
@@ -47,13 +46,7 @@ export default {
         font-size: 14px;
         color: rgba(255, 255, 255,0.6);
       }
-      .ddicon {
-        display: inline-block;
-        width: 3px;
-        height: 15px;
-        background: red;
-        margin-right: 10px;
-      }
+
     }
 
   }
