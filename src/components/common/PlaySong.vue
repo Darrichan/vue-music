@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div  style="padding:0!important;">
     <!-- user.vue的数据展示-->
-    <ul v-if="SongData" style="padding:0;">
+    <ul v-if="SongData" style="padding: 0!important;">
         <li class="TopSongli" style="color:rgb(100, 100, 100)">
           <div>序号</div>
           <div>歌曲</div>
@@ -45,7 +45,7 @@
             <div>
               <span>
                 <i class="My-new-iconyinle icnColor" v-show="currentShow == index" ></i>
-                <span v-show="currentShow !== index">{{index + 1 }}</span>
+                <span >{{index + 1 }}</span>
               </span>
             </div>
             <div>
@@ -110,7 +110,7 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
+<style lang="less">
 .icnColor {
   color: red;
 }

@@ -174,7 +174,8 @@ export default {
     },
     // 歌单
     gotolistdetails (id) {
-      this.$router.push("/rankingdetails/" + id);
+      // this.$router.push("/rankingdetails/" + id);
+      this.$message.error('暂未开发歌单功能哦！')
     },
     // 获取用户详情
     async getUserDetails () {
