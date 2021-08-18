@@ -1,13 +1,19 @@
 <template>
   <div id="app">
     <Navigation />
-    <router-view />
-    <vueplayer :music="audio[0]"
-               :showLrc="true"
-               :autoplay="false"
-               id="play"
-               class="Aplayer" />
+    <keep-alive exclude="search,SongDetails,rankingdetails,MVdetails,SingerDetails,user">
+      <router-view v-if="isRouterShow" />
+    </keep-alive>
+
     <Footer />
+    <div class="Aplayer">
+      <div class="kailong"></div>
+      <vueplayer :music="audio[0]"
+                 :showLrc="true"
+                 :autoplay="true"
+                 id="play" />
+    </div>
+
   </div>
 </template>
 
@@ -18,9 +24,18 @@ import Navigation from './components/common/Navigation.vue'
 import vueplayer from 'vue-aplayer'
 // Footer组件导入
 import Footer from './components/common/Footer.vue'
+
 export default {
+  provide () {
+    return {
+      reload: this.reload,//把刷新方法传给子组件
+    }
+  },
   data () {
     return {
+      screenWidth: document.body.clientWidth, // 屏幕宽度
+      isRouterShow: true,
+      show2: true,
       audio: [
         {
           src: "http://m801.music.126.net/20210811194733/4a19c1532c1fc25eb3ebca7c3b7a41d3/jdymusic/obj/wo3DlMOGwrbDjj7DisKw/10238788214/250c/6df7/1ab8/e9f5b962dafb39ce2f03d2222c80ba14.mp3",
@@ -31,12 +46,38 @@ export default {
         }]
     }
   },
+  watch: {
+    screenWidth () {
+      // 1206
+      if (this.screenWidth < 1206) {
+        alert('请使用宽度大于1206px的pc端访问本网站！！');
+      }
+    }
+  },
+  mounted () {
+    window.onresize = () => {
+      return (() => {
+        this.screenWidth = document.body.clientWidth
+      })()
+    }
+  },
   components: {
-    Navigation, Footer, vueplayer
+    Navigation, Footer, vueplayer,
+  },
+  methods: {
+    reload () {
+      this.isRouterShow = false
+      this.$nextTick(() => {
+        this.isRouterShow = true
+        // Vue.nextTick()  在下次 DOM 更新循环结束之后执行延迟回调。在修改数据之后立即使用这个方法，获取更新后的 DOM。
+      })
+
+    },
   },
   created () {
     // 接收音乐数据
     this.$bus.$on('getMusicMessage', (val) => {
+      console.log(val);
       //  获取得到的音乐数据
       var data = {
         src: val.musicdata.playUrl,
@@ -58,9 +99,24 @@ export default {
 
 <style>
 .Aplayer {
+  transition-duration: 1s;
+
   display: block;
   width: 100%;
   position: fixed !important;
-  bottom: 0;
+  bottom: -95px;
+}
+.Aplayer:hover {
+  transition-duration: 0.5s;
+  bottom: -5px;
+}
+.kailong {
+  width: 0;
+  height: 0;
+  margin: 0 auto;
+  border-right: 15px solid transparent;
+  border-left: 15px solid transparent;
+  border-bottom: 15px solid #41b883;
+  cursor: pointer;
 }
 </style>

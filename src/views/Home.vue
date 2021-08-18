@@ -3,10 +3,17 @@
     <!-- 轮播图组件 -->
     <Carousel :banner="bannerList"
               style="width:80%;margin:0 auto;" />
-    <song-list style="width:80%;margin:0 auto;" :SongListData="SongListData" />
+    <song-list :title="'最新推荐'"
+               style="width:80%;margin:0 auto;"
+               :SongListData="SongListData"
+               v-if="visible" />
 
     <!-- 最近新歌 -->
-    <latest-song :latestSongList="latestSongList" />
+    <latest-song :latestSongList="latestSongList"
+                 v-if="visible" />
+    <search-result style="width:80%;margin:0 auto;"
+                   :searchResultSuccess="searchResultSuccess"
+                   v-if="!visible" />
   </div>
 </template>
 
@@ -17,18 +24,22 @@ import Carousel from '../components/content/Carousel .vue'
 import latestSong from '../components/content/LatestSong.vue'
 // 推荐歌单导入
 import songList from '../components/content/SongList.vue'
+// 搜索结果组件的引入
+import SearchResult from './SearchResult.vue'
 // home页面的请求
 import { getBanner, getLatestSong, GetRecommendPlaylist } from '../request/home'
 export default {
   components: {
     Carousel,
-    latestSong, songList
+    latestSong, songList, SearchResult
   },
   data () {
     return {
       bannerList: [],
       latestSongList: [],
-      SongListData: []
+      SongListData: [],
+      searchResultSuccess: this.$store.state.searchData,
+      visible: true,
     }
   },
   methods: {
@@ -48,12 +59,30 @@ export default {
       })
     }
   },
+  updated () {
+    console.log(this.$store.state.searchData.length);
+  },
   // 生命周期函数加载轮播图
-  mounted () {
+  created () {
     this.getBanner()
     this.getLatestSong()
     this.GetRecommendPlaylist()
-  }
+
+  },
+  watch: {
+    monitor () {
+      this.searchResultSuccess = this.$store.state.searchData
+      if (this.searchResultSuccess.length != 0) {
+        this.visible = false;
+      }
+    }
+  },
+  computed: {
+    monitor () {
+      return this.$store.state.searchData
+    }
+  },
+
 }
 </script>
 <style lang="less" scoped>

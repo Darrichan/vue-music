@@ -8,7 +8,8 @@
     </div>
     <el-form ref="loginFormRef"
              :model="loginForm"
-             :rules="rules">
+             :rules="rules"
+             @keyup.enter.native="loginFormEnter">
       <el-form-item label="手机号："
                     prop="phone">
         <el-input placeholder="请输入手机号"
@@ -28,7 +29,7 @@
       <el-button @click="dialogFormVisible = false">取 消</el-button>
       <el-button style="background-color:#41b883;color:black"
                  @click="loginFormEnter"
-                 @keyup.enter.native="loginFormEnter">确 定</el-button>
+                 >确 定</el-button>
     </div>
   </el-dialog>
 </template>
@@ -39,6 +40,7 @@ export default {
     this.$bus.$on('openLogin', (val) => {
       this.dialogFormVisible = val.dialogFormVisible;
     })
+
   },
   methods: {
     loginFormClose () {
@@ -61,6 +63,8 @@ export default {
           this.$message.success("登录成功！");
           // 保存用户id
           this.id = result.data.account.id;
+          // 跳转到登录页面
+          this.$router.push("/user/" + this.id);
           // 获取后端返回的token
           var token = result.data.token;
 

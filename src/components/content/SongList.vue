@@ -1,7 +1,6 @@
 <template>
   <div class="grid-content">
-      <Title :title="'推荐歌单'" />
-
+    <Title :title="title" />
 
     <ul class="rankingUl">
       <li v-loading="loading"
@@ -29,16 +28,11 @@
 // 小标题组件
 import Title from '../common/Title.vue';
 export default {
-  props: {
-    SongListData: {
-      type: Array,
-      default: () => []
-    },
-    ShowPlayCount: {
-      type: Boolean,
-      default: true
-    }
-  },
+  props: ['title',
+    'SongListData',
+    'ShowPlayCount']
+
+  ,
   watch: {
     SongListData () {
       // 监听当前数据变化，然后停止加载动画

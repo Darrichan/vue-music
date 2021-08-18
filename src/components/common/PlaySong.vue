@@ -1,110 +1,112 @@
 <template>
-  <div  style="padding:0!important;">
+  <div style="padding:0!important;">
     <!-- user.vue的数据展示-->
-    <ul v-if="SongData" style="padding: 0!important;">
-        <li class="TopSongli" style="color:rgb(100, 100, 100)">
-          <div>序号</div>
-          <div>歌曲</div>
-          <div>歌手</div>
-          <div>专辑</div>
-          <div>时长</div>
-        </li>
+    <el-table :data="SearchSongData"
+              style="width: 100%;padding:1%; color:black;"
+              :stripe="true"
+              v-if="SearchSongData"
+              @row-click="tableClick">
+      <el-table-column label="序号"
+                       type="index">
 
-        <div class="Songli">
-          <li slot="songli" :key="index" v-for="(item,index) in SongData" @click="playMusic(item.song.id)" @mouseover="ChangeIsShow(index)">
-            <div>
-              <!-- <span class="My-new-iconyinle" v-show="currentShow == index" ></span> -->
-              <span>
-                <i class="My-new-iconyinle icnColor" v-show="currentShow == index" ></i>
-                <span>{{index + 1 }}</span>
-              </span>
-            </div>
-            <div>
-              <img :src="item.song.al.picUrl+'?param=40y40'" alt="">
-              <span>{{item.song.name}}</span>
-            </div>
-            <div><span>{{item.song.ar[0].name}}</span></div>
-            <div><span>{{item.song.al.name}}</span></div>
-            <div><span>{{item.song.dt | GetTime()}}</span></div>
-          </li>
-        </div>
-    </ul>
+      </el-table-column>
+      <el-table-column label="歌曲"
+                       prop="name">
 
-    <!-- searchDetails.vue、 rankingdetails.vue的数据展示 -->
-     <ul v-if="SearchSongData">
-        <li class="TopSongli" style="color:rgb(100, 100, 100)">
-          <div>序号</div>
-          <div>歌曲</div>
-          <div>歌手</div>
-          <div>专辑</div>
-          <div>时长</div>
-        </li>
+      </el-table-column>
+      <el-table-column label="歌手"
+                       prop="ar[0].name">
 
-        <div class="Songli">
-          <li slot="songli" :key="index" v-for="(item,index) in SearchSongData" @click="playMusic(item.id)" @mouseover="ChangeIsShow(index)">
-            <div>
-              <span>
-                <i class="My-new-iconyinle icnColor" v-show="currentShow == index" ></i>
-                <span >{{index + 1 }}</span>
-              </span>
-            </div>
-            <div>
-              <img :src="item.al.picUrl+'?param=40y40'" alt="">
-              <span>{{item.name}}</span>
-            </div>
-            <div><span>{{item.ar[0].name}}</span></div>
-            <div><span>{{item.al.name}}</span></div>
-            <div><span>{{item.dt | GetTime()}}</span></div>
-          </li>
-        </div>
-    </ul>
+      </el-table-column>
+      <el-table-column label="专辑"
+                       prop="al.name">
+
+      </el-table-column>
+      <el-table-column label="时长"
+                       prop="dt">
+        <template slot-scope="scope">
+          {{scope.row.dt|GetTime}}
+        </template>
+      </el-table-column>
+    </el-table>
+
+    <el-table :data="SongData"
+              style="width: 100%;padding:1%; color:black;margin-top:1%"
+              :stripe="true"
+              v-if="SongData"
+              @row-click="tableClick">
+      <el-table-column label="序号"
+                       type="index">
+
+      </el-table-column>
+      <el-table-column label="歌曲"
+                       prop="song.name">
+
+      </el-table-column>
+      <el-table-column label="歌手"
+                       prop="song.ar[0].name">
+
+      </el-table-column>
+      <el-table-column label="专辑"
+                       prop="song.al.name">
+
+      </el-table-column>
+      <el-table-column label="时长"
+                       prop="song.dt">
+        <template slot-scope="scope">
+          {{scope.row.song.dt|GetTime}}
+        </template>
+      </el-table-column>
+    </el-table>
+
   </div>
 </template>
 
 <script>
-import {playMisic } from '../../request/PlayMusic'
+import { playMisic } from '../../request/PlayMusic'
 // 格式化时间
 import { filtrationTime } from '../../assets/js/songTime'
 export default {
-  // props:{
-  //   // 来自用户模块的歌曲数据
-  //   SongData:{
-  //     type:Array,
-  //     default: () => false
-  //   },
-  //   // 来自搜索模块、歌单的歌曲数据
-  //    SearchSongData:{
-  //     type:Array,
-  //     default: () => false
-  //   }
-  // },
-  props:['SongData','SearchSongData'],
-  filters:{
-    GetTime(val){
-     return filtrationTime(val);
+  props: ['SongData', 'SearchSongData'],
+  filters: {
+    GetTime (val) {
+      return filtrationTime(val);
     }
   },
-  data() {
+  data () {
     return {
-      currentShow:null,
+      currentShow: null,
     }
   },
-  methods:{
-  ChangeIsShow(index){
-    this.currentShow = index;
-  },
-  playMusic(id){
-    playMisic(id).then(musicdata => {
-      // 通过事件总线发送事件并传入数据 -> 歌曲数据和歌曲id
-    this.$bus.$emit('getMusicMessage',{musicdata,id})
+  methods: {
+    tableClick (row) {
+      console.log(row);
+      if (this.SongData) {
+        this.playMusic(row.song.id)
+      }
+      if (this.SearchSongData) {
+        this.playMusic(row.id)
 
-    let newsData = {
-        picUrl:musicdata.picUrl,
-        Singer:musicdata.Singer,
-        picname:musicdata.picname
       }
 
-    });
+    },
+    indexMethod () {
+      return index * 2;
+    },
+    ChangeIsShow (index) {
+      this.currentShow = index;
+    },
+    playMusic (id) {
+      playMisic(id).then(musicdata => {
+        // 通过事件总线发送事件并传入数据 -> 歌曲数据和歌曲id
+        this.$bus.$emit('getMusicMessage', { musicdata, id })
+        let newsData = {
+          picUrl: musicdata.picUrl,
+          Singer: musicdata.Singer,
+          picname: musicdata.picname
+        }
+
+      });
     },
   }
 }
@@ -114,32 +116,38 @@ export default {
 .icnColor {
   color: red;
 }
+.el-table__row {
+  cursor: pointer;
+}
+.el-table__row:hover{
+  color:#41b883;
+}
 .Songli li:hover {
-   background-color: rgba(207, 204, 204, 0.5)!important;
+  background-color: rgba(207, 204, 204, 0.5) !important;
 }
 .Songli li:nth-child(odd) {
-  background-color: rgba(231, 228, 228,0.5);
+  background-color: rgba(231, 228, 228, 0.5);
 }
 
 .TopSongli,
-.Songli li{
+.Songli li {
   display: flex;
   height: 50px;
   margin: 5px 0;
   border-radius: 5px;
-  cursor:pointer;
+  cursor: pointer;
   div {
-   line-height: 50px;
-   box-sizing: border-box;
-   span {
-     font-size: 14px!important;
-          // 强制一行
-    overflow:hidden;
-    text-overflow:ellipsis;
-    display:-webkit-box;
-    -webkit-box-orient:vertical;
-    -webkit-line-clamp:1;//以此类推，3行4行直接该数字就好啦
-   }
+    line-height: 50px;
+    box-sizing: border-box;
+    span {
+      font-size: 14px !important;
+      // 强制一行
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-box-orient: vertical;
+      -webkit-line-clamp: 1; //以此类推，3行4行直接该数字就好啦
+    }
   }
 
   // 序号和时长
@@ -174,12 +182,14 @@ export default {
   div:nth-of-type(3) {
     flex: 1.5;
   }
-   // 专辑
+  // 专辑
   div:nth-of-type(4) {
-     flex: 2;
+    flex: 2;
   }
-
 }
-
-
+el-table {
+  el-table-column {
+    cursor: pointer !important;
+  }
+}
 </style>

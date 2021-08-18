@@ -39,7 +39,7 @@
               <div class="mycover">
                 <ul class="grid-content-right-ul">
                   <li :key="index"
-                      v-for="(item,index) in playlist"
+                      v-for="(item,index) in playlist.slice(1,playlist.length)"
                       @click="gotolistdetails(item.id)">
                     <img :src="item.coverImgUrl"
                          alt="">
@@ -61,13 +61,13 @@
               class="personalCenter"
               style="width:50%;padding:0;">
         <div class="grid-content UserlMain"
-             style="width:100%;padding:0; margin-top:13.5%">
+             style="width:100%;padding:0; margin-top:80px">
           <!-- 中间 -->
           <!-- 第一层-->
           <div class="main01"
                style="width:100%;padding:0;">
             <div class="main01-top"
-                 style="width:100%;padding:0;display:flex;justify-content:space-between;border-bottom:5px solid #41b883;">
+                 style="width:100%;padding:0;display:flex;justify-content:space-between;border-bottom:5px solid #41b883;margin-bottom:0;">
 
               <strong style="display:block;"> <span style="display: inline-block;width: 5px;height: 100%;margin-right: 5px;color: #41b883;font-size: 14px;font-weight: 600;background: #41b883;">|</span>听歌排行</strong>
               <div>
@@ -174,8 +174,8 @@ export default {
     },
     // 歌单
     gotolistdetails (id) {
-      // this.$router.push("/rankingdetails/" + id);
-      this.$message.error('暂未开发歌单功能哦！')
+      this.$router.push("/rankingdetails/" + id);
+      // this.$message.error('暂未开发歌单功能哦！')
     },
     // 获取用户详情
     async getUserDetails () {

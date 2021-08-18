@@ -10,28 +10,32 @@ Vue.use(Vuex);
 
 const store = new Vuex.Store({
   state: {
-    userId:getSessionStorageItem(USERID),
-    userToken:getSessionStorageItem(USERTOKEN),
-    cookie:getSessionStorageItem(COOKIE),
+    userId: getSessionStorageItem(USERID),
+    userToken: getSessionStorageItem(USERTOKEN),
+    cookie: getSessionStorageItem(COOKIE),
+    searchData: [],
   },
   // 同步用mutations
   mutations: {
     // 方法
-    setMusicData(state,data){
+    setMusicData (state, data) {
       state.musicData = data // 保存userToken
-      setSessionStorageItem(MUSICDATA,data) // 调用函数用sessionStorage将userToken持久化
+      setSessionStorageItem(MUSICDATA, data) // 调用函数用sessionStorage将userToken持久化
     },
-    setUserId(state,data){
+    setUserId (state, data) {
       state.userId = data
-      setSessionStorageItem(USERID,data)
+      setSessionStorageItem(USERID, data)
     },
-    setUserToken(state,data){
+    setSearchData(state,data){
+      state.searchData = data
+    },
+    setUserToken (state, data) {
       state.userToken = data
-      setSessionStorageItem(USERTOKEN,data)
+      setSessionStorageItem(USERTOKEN, data)
     },
-    setCookie(state,data){
+    setCookie (state, data) {
       state.cookie = data
-      setSessionStorageItem(COOKIE,data)
+      setSessionStorageItem(COOKIE, data)
     },
   },
 })

@@ -31,26 +31,18 @@
             </li>
           </router-link>
 
-          <router-link to="/Songlist">
-            <li class="floatLeft"><i class="My-new-iconbiaodan"></i>歌单<div></div>
-            </li>
-          </router-link>
-
           <router-link to="/Singer/Singerlist">
             <li class="floatLeft"><i class="My-new-iconyinle1"></i>歌手<div></div>
             </li>
           </router-link>
 
-          <router-link to="/MV/MVList">
-            <li class="floatLeft"><i class="My-new-iconzhibo"></i>MV<div></div>
-            </li>
-          </router-link>
 
         </ul>
         <!-- 搜索+登录区域 -->
         <div class="SearchAndLogin">
           <el-button class="el-icon-search"
-                     type="text"></el-button>
+                     type="text"
+                     @click="searchBtn"></el-button>
           <span style="padding:0 15px"></span>
           <span style="cursor: pointer;"
                 @click="loginClick"
@@ -91,16 +83,18 @@
       </el-col>
     </el-row>
     <login />
+    <Search :drawer="drawer" />
   </div>
 
 </template>
 
 <script>
+import Search from './Search.vue'
 import Login from '../common/Login.vue'
 export default {
   name: 'Navigation',
   components: {
-    Login
+    Login, Search
   },
   data () {
     return {
@@ -112,6 +106,8 @@ export default {
       avatarUrls: '',
       // 用户昵称
       nickname: '',
+      // 搜索框
+      drawer: false
     }
   },
   watch: {
@@ -121,6 +117,9 @@ export default {
     }
   },
   methods: {
+    searchBtn () {
+      this.$bus.$emit('oepnSearch', true)
+    },
     // 获取用户详情
     async getUserDetails () {
 
@@ -145,14 +144,14 @@ export default {
       for (let i = 0; i < d.length; i++) {
         d[i].style.color = "#2a405d"
       }
-      e.target.style.color = "red";
+      e.target.style.color = "#40b480";
     },
     loginClick () {
       this.$bus.$emit('openLogin', { dialogFormVisible: true })
     },
 
     Search () {
-      this.$emit("ClickSearch")
+      this.$bus.$emit('openSearch', true)
     },
     // 点击改变样式
     changefontdiv (index) {
@@ -188,7 +187,9 @@ export default {
   },
 
   mounted () {
-    console.log(window.sessionStorage.getItem("USERID"))
+    this.$bus.$on('closeDrawer', val => {
+      this.drawer = val
+    })
     this.showMsg(window.sessionStorage.getItem("USERID"));
     this.getUserDetails();
     this.judgeLogin();

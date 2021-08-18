@@ -156,7 +156,7 @@ export default {
     }
 
 }
-.SingerboxdetailsF {
+.Singerboxdetails {
     width: 100%;
     position: absolute;
     bottom: -60px;
