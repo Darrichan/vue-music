@@ -1,17 +1,24 @@
 <template>
   <div id="app">
-    <Navigation />
-    <keep-alive exclude="search,SongDetails,rankingdetails,MVdetails,SingerDetails,user">
-      <router-view v-if="isRouterShow" />
-    </keep-alive>
+    <div style="width:100vd;height:100vh;"
+         v-loading="loading"
+         v-if="!widthVisible"
+         element-loading-text="请选择宽度大于1200px的pc访问">
 
-    <Footer />
-    <div class="Aplayer">
-      <div class="kailong"></div>
-      <vueplayer :music="audio[0]"
-                 :showLrc="true"
-                 :autoplay="true"
-                 id="play" />
+    </div>
+    <div v-if="widthVisible">
+      <Navigation />
+      <keep-alive exclude="search,SongDetails,rankingdetails,MVdetails,SingerDetails,user">
+        <router-view v-if="isRouterShow" />
+      </keep-alive>
+      <Footer />
+      <div class="Aplayer">
+        <div class="kailong"></div>
+        <vueplayer :music="audio[0]"
+                   :showLrc="true"
+                   :autoplay="true"
+                   id="play" />
+      </div>
     </div>
 
   </div>
@@ -36,6 +43,8 @@ export default {
       screenWidth: document.body.clientWidth, // 屏幕宽度
       isRouterShow: true,
       show2: true,
+      loading: false,
+      widthVisible: true,
       audio: [
         {
           src: "http://m801.music.126.net/20210811194733/4a19c1532c1fc25eb3ebca7c3b7a41d3/jdymusic/obj/wo3DlMOGwrbDjj7DisKw/10238788214/250c/6df7/1ab8/e9f5b962dafb39ce2f03d2222c80ba14.mp3",
@@ -50,7 +59,11 @@ export default {
     screenWidth () {
       // 1206
       if (this.screenWidth < 1206) {
-        alert('请使用宽度大于1206px的pc端访问本网站！！');
+        this.loading = true;
+        this.widthVisible = false;
+      } else {
+        this.loading = false;
+        this.widthVisible = true;
       }
     }
   },

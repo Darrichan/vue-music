@@ -43,9 +43,7 @@ export default {
         return this.$message.error("获取搜索歌曲失败！");
       }
       //  将歌曲数据传给父组件
-      setTimeout(() => {
-        this.searchRes = result.data.result.songs;
-      }, 100);
+        this.searchRes =await result.data.result.songs;
     },
     searchDialog () {
       this.$router.push('/')

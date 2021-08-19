@@ -67,19 +67,24 @@ export default {
     this.getBanner()
     this.getLatestSong()
     this.GetRecommendPlaylist()
-
   },
   watch: {
-    monitor () {
+    monitor1 () {
       this.searchResultSuccess = this.$store.state.searchData
       if (this.searchResultSuccess.length != 0) {
-        this.visible = false;
+        this.$store.commit('setVisible', false);
       }
+    },
+    monitor2(){
+      this.visible = this.$store.state.visible
     }
   },
   computed: {
-    monitor () {
+    monitor1 () {
       return this.$store.state.searchData
+    },
+    monitor2(){
+      return this.$store.state.visible
     }
   },
 

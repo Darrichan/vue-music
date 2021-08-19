@@ -14,6 +14,7 @@ const store = new Vuex.Store({
     userToken: getSessionStorageItem(USERTOKEN),
     cookie: getSessionStorageItem(COOKIE),
     searchData: [],
+    visible: true,
   },
   // 同步用mutations
   mutations: {
@@ -22,11 +23,14 @@ const store = new Vuex.Store({
       state.musicData = data // 保存userToken
       setSessionStorageItem(MUSICDATA, data) // 调用函数用sessionStorage将userToken持久化
     },
+    setVisible (state, data) {
+      state.visible = data
+    },
     setUserId (state, data) {
       state.userId = data
       setSessionStorageItem(USERID, data)
     },
-    setSearchData(state,data){
+    setSearchData (state, data) {
       state.searchData = data
     },
     setUserToken (state, data) {
