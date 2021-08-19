@@ -14,7 +14,7 @@ Vue.use(ElementUI);
 // 时间总线注册
 Vue.prototype.$bus = new Vue()
 
-axios.defaults.baseURL = 'http://101.133.165.226:3000'
+axios.defaults.baseURL = '请输入你的api'
 Vue.prototype.$http = axios;
 
 Vue.config.productionTip = false
